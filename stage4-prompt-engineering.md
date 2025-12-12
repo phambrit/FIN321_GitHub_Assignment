@@ -1,222 +1,201 @@
-GOAL
+# Stage 4 – AI Excel Generation Prompt (FX Hedging Model)
 
-Create a fully-functional Excel file that models forward, money market, and option hedges for my EUR receivable.
-The model must follow strict named-range usage, color-coding standards, formatting rules, and full verification steps.
+## GOAL
+Create a fully functional Excel (.xlsx) spreadsheet that models **forward**, **money market**, and **option** hedges for a EUR-denominated receivable.  
+The model must strictly follow named-range conventions, color-coding rules, formatting requirements, and verification procedures.
 
-⸻
+---
 
-CONTEXT
+## CONTEXT
+This prompt translates the Stage 2 specification and Stage 3 Excel logic into a **precise, executable AI instruction** capable of generating a complete, professional FX hedging model.
 
-Translate the modeling logic from my Stage 2 specification and Stage 3 Excel logic into a new, complete, professional spreadsheet.
-Follow the prompt-engineering best practices shown below:
-	•	Use hierarchical structure
-	•	Avoid vague instructions
-	•	Provide all variable values explicitly
-	•	Use named ranges consistently
-	•	Specify formatting explicitly
-	•	Include verification procedures
+Prompt-engineering best practices applied:
+- Hierarchical structure
+- Explicit variable definitions
+- No inferred values
+- Consistent named ranges
+- Explicit formatting and color rules
+- Clear verification and export instructions
 
-⸻
+---
 
-INPUT VARIABLES (Use These Exact Values)
+## INPUT VARIABLES (USE EXACT VALUES)
 
-These values must be hard-coded as yellow input cells and assigned to named ranges exactly as written.
+All inputs must be **hard-coded**, **explicitly stated**, and assigned to named ranges.
 
-Exposure
-	•	FC_AMT = 4,500,000 (EUR receivable)
+### Exposure
+- **FC_AMT = 4,500,000**  
+  *EUR receivable*
 
-Market Data (real values as of Dec 10, 2025)
-	•	S0_in = 1.1634 (EURUSD spot)
-	•	F0_in = 1.0875 (1-year EURUSD forward)
-	•	R_USD = 0.0363 (U.S. 1-year interest rate)
-	•	R_FC = 0.02268 (EUR 1-year interest rate)
+### FX Rates (USD per EUR, Dec 10, 2025)
+- **S0_in = 1.1634**  
+  *Spot EURUSD*
+- **F0_in = 1.0875**  
+  *1-year forward EURUSD*
 
-Options
-	•	K_PUT = 1.1634
-	•	K_CALL = 1.1634
-	•	PREM_PUT = 0.015
-	•	PREM_CALL = 0.018
+### Interest Rates (Simple annual basis)
+- **R_USD = 0.0363**  
+  *U.S. 1-year rate*
+- **R_FC = 0.02268**  
+  *EUR 1-year rate*
 
-Timing
-	•	T_DAYS = 360
-	•	T_YRS = 1.0
+### Options (per EUR)
+- **K_PUT = 1.1634**
+- **K_CALL = 1.1634**
+- **PREM_PUT = 0.015**
+- **PREM_CALL = 0.018**
 
-All numeric values must appear as explicit inputs.
-AI must not infer or create values.
+### Time Convention
+- **T_DAYS = 360**
+- **T_YRS = 1.0**
 
-⸻
+The AI must not infer or fetch values.  
+All values above must appear in the Excel input section.
 
-SPREADSHEET REQUIREMENTS
+---
 
-1. SHEETS
+## SPREADSHEET REQUIREMENTS
 
-Create, at minimum, the following sheets:
-	1.	Inputs_Summary
-	2.	Scenarios
-	3.	Audit_Map
+### SHEETS
+Create the following worksheets:
+1. `Inputs_Summary`
+2. `Scenarios`
+3. `Audit_Map`
 
-2. NAMED RANGES
+---
 
-Assign the following names exactly:
-	•	FC_AMT
-	•	S0_in
-	•	F0_in
-	•	R_USD
-	•	R_FC
-	•	K_PUT
-	•	K_CALL
-	•	PREM_PUT
-	•	PREM_CALL
-	•	T_DAYS
-	•	T_YRS
+## NAMED RANGE DEFINITIONS
 
-These must appear in the Name Manager and be used consistently in formulas.
+The following named ranges **must exist exactly as written**:
 
-3. COLOR CODING
+- `FC_AMT`
+- `S0_in`
+- `F0_in`
+- `R_USD`
+- `R_FC`
+- `K_PUT`
+- `K_CALL`
+- `PREM_PUT`
+- `PREM_CALL`
+- `T_DAYS`
+- `T_YRS`
 
-Use these colors across all sheets:
-	•	Yellow = Inputs / decision variables
-	•	Blue = Assumptions
-	•	Green = Formulas
-	•	Gray = Outputs / KPIs
+No alternative naming conventions are allowed.
 
-Do NOT deviate from this scheme.
+---
 
-4. MODEL COMPONENTS (Must Be Implemented Exactly)
+## FORMATTING & COLOR CODING
 
-(A) Unhedged Exposure
+Apply these colors consistently across all sheets:
 
-On Scenarios sheet:
-	•	Build S_T from 0.95 × S0_in to 1.05 × S0_in
-	•	Use 0.01 increments
-	•	Compute:
+- **Yellow** — Inputs / decision variables  
+- **Blue** — Assumptions  
+- **Green** — Formula cells  
+- **Gray** — Outputs / KPIs  
+
+All named-range input cells must be yellow.  
+All calculated cells must be green.
+
+---
+
+## MODEL LOGIC (PSEUDOCODE)
+
+### Scenario Spot Rates
+S_T = sequence(0.95 * S0_in , 1.05 * S0_in , step = 0.01)
+
+### Unhedged Exposure
 USD_unhedged = FC_AMT * S_T
 
-(B) Forward Hedge
-	•	USD_forward = FC_AMT * F0_in
-	•	Show constant across scenarios
-	•	Include gray KPI summary
+### Forward Hedge
+USD_forward = FC_AMT * F0_in
 
-(C) Money Market Hedge (3-step)
-	1.	Borrow EUR PV:
-EUR_borrow = FC_AMT / (1 + R_FC * T_YRS)
-	2.	Convert to USD at spot:
-USD_invest_0 = EUR_borrow * S0_in
-	3.	Invest USD:
-USD_MM = USD_invest_0 * (1 + R_USD * T_YRS)
+### Money Market Hedge (3-Step)
+EUR_borrow     = FC_AMT / (1 + R_FC * T_YRS)
+USD_invest_0   = EUR_borrow * S0_in
+USD_MM         = USD_invest_0 * (1 + R_USD * T_YRS)
 
-Show USD_MM across all scenarios and in gray KPI summary.
+### Put Option Hedge
+Premium_PUT_total = FC_AMT * PREM_PUT
+Payoff_PUT        = max(K_PUT - S_T, 0) * FC_AMT
 
-(D) Option Hedges
+USD_PUT_SCEN =
+if S_T < K_PUT:
+FC_AMT * K_PUT - Premium_PUT_total
+else:
+FC_AMT * S_T - Premium_PUT_total
 
-Use per-EUR premiums and 1:1 notional.
+### Call Option Hedge
+Premium_CALL_total = FC_AMT * PREM_CALL
+Payoff_CALL        = max(S_T - K_CALL, 0) * FC_AMT
 
-Put Hedge
-	•	Premium_PUT_total = FC_AMT * PREM_PUT
-	•	Payoff:
-Payoff_PUT = MAX(K_PUT - S_T, 0) * FC_AMT
-	•	Net proceeds (scenario-specific):
-	•	If exercised: FC_AMT * K_PUT - Premium_PUT_total
-	•	Else: FC_AMT * S_T - Premium_PUT_total
+USD_CALL_SCEN =
+(FC_AMT * S_T + Payoff_CALL) - Premium_CALL_total
 
-Call Hedge
-Same structure, using K_CALL and PREM_CALL.
-Include payoff profile and KPI.
+---
 
-(E) Sensitivity Table
+## MODEL COMPONENTS
 
-Create a two-way data table or scenario table showing results over ±5% spot range.
+### Required Calculations
+- Unhedged exposure
+- Forward hedge
+- Money market hedge
+- Put option hedge
+- Call option hedge
 
-(F) Charts
+### Scenario Table
+For each `S_T`, include:
+- `USD_unhedged`
+- `USD_forward`
+- `USD_MM`
+- `USD_PUT_SCEN`
+- `USD_CALL_SCEN`
 
-On Scenarios, produce a line chart with:
-	•	Unhedged
-	•	Forward
-	•	Money Market
-	•	Put
-	•	Call
+---
 
-All plotted against S_T.
+## SENSITIVITY ANALYSIS
+Create a sensitivity table showing USD outcomes across the ±5% spot-rate range (0.95×S0_in to 1.05×S0_in).
 
-⸻
+---
 
-NAMED RANGE DEFINITIONS
+## OUTPUT REQUIREMENTS
 
-Provide a complete “Audit_Map” sheet listing:
-	•	Each named range
-	•	Cell address
-	•	Description
-	•	All dependent formulas
+On `Inputs_Summary`, display gray KPI outputs for:
+- Unhedged baseline (S_T = S0_in)
+- Forward hedge proceeds
+- Money market hedge proceeds
+- Put hedge proceeds (baseline)
+- Call hedge proceeds (baseline)
 
-Ensure traceability and auditability.
+---
 
-⸻
+## CHARTS
+Create a line chart plotting USD proceeds vs. `S_T` for:
+- Unhedged
+- Forward
+- Money market
+- Put hedge
+- Call hedge
 
-MODEL LOGIC (PSEUDOCODE)
+---
 
-Implement the following pseudocode explicitly in formulas:
+## VERIFICATION
 
-S_T = sequence(0.95*S0_in , 1.05*S0_in , step=0.01)
-USD_unhedged = FC_AMT * S_T
+Before exporting the file, confirm:
 
-Forward:
-  USD_forward = FC_AMT * F0_in
+1. **Interest Rate Parity**
+F0_in ≈ S0_in × (1 + R_USD × T_YRS) / (1 + R_FC × T_YRS)
 
-Money Market:
-  EUR_borrow = FC_AMT / (1 + R_FC*T_YRS)
-  USD_invest_0 = EUR_borrow * S0_in
-  USD_MM = USD_invest_0 * (1 + R_USD*T_YRS)
+2. **Forward ≈ Money Market hedge results**
 
-Put Hedge:
-  Premium_PUT_total = FC_AMT * PREM_PUT
-  Payoff_PUT = max(K_PUT - S_T, 0) * FC_AMT
-  USD_PUT_SCEN = if(S_T < K_PUT,
-                     FC_AMT*K_PUT - Premium_PUT_total,
-                     FC_AMT*S_T - Premium_PUT_total)
+3. **All named ranges exist in Name Manager**
 
-Call Hedge:
-  Premium_CALL_total = FC_AMT * PREM_CALL
-  Payoff_CALL = max(S_T - K_CALL, 0) * FC_AMT
-  USD_CALL_SCEN = (FC_AMT*S_T + Payoff_CALL) - Premium_CALL_total
+4. **Audit_Map sheet lists**
+   - Named range
+   - Cell address
+   - Description
+   - Formula dependencies
 
+---
 
-⸻
-
-FORMATTING & COLOR CODING
-	•	Inputs block (yellow) must be at the top of Inputs_Summary
-	•	KPIs (gray) should appear in a dedicated output panel
-	•	Formulas (green) must have consistent fill
-	•	Clear section headers, bold / borders
-	•	Use accounting number format for USD amounts
-	•	Use 4 decimal places for FX rates
-
-⸻
-
-OUTPUT REQUIREMENTS
-
-Produce:
-	1.	A completed Excel workbook (.xlsx)
-	2.	All calculations working
-	3.	Fully dynamic updates when inputs change
-	4.	Professional styling
-
-⸻
-
-VERIFICATION
-
-Before producing the file, perform the following checks:
-	1.	Interest parity check
-Confirm:
-F0_in ≈ S0_in * (1 + R_USD*T_YRS) / (1 + R_FC*T_YRS)
-	2.	Forward vs Money Market equivalence
-Verify USD_forward ≈ USD_MM.
-	3.	Check all named ranges exist
-Ensure Name Manager includes every required range.
-	4.	Return full formula map
-Provide a list of all formulas used in the workbook.
-
-⸻
-
-EXPORT
-
-Return a downloadable .xlsx Excel file that satisfies all requirements.
+## EXPORT
+Return a downloadable **Excel (.xlsx) file** that meets all requirements above.
