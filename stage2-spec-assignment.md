@@ -154,6 +154,3 @@ USD_unhedged = FC_AMT × S_T
 - Implement this logic in a fully functional Excel model.
 - Label variables clearly for AI-based spreadsheet generation.
 - Perform scenario analysis and produce executive recommendations.
-### 4.1 Forward Hedge
-
-Lock in USD proceeds using the forward rate:
