@@ -199,3 +199,8 @@ F0_in ≈ S0_in × (1 + R_USD × T_YRS) / (1 + R_FC × T_YRS)
 
 ## EXPORT
 Return a downloadable **Excel (.xlsx) file** that meets all requirements above.
+
+---
+
+# Deliverable 2 — Fully Functional Excel Workbook Generated with the Prompt
+
