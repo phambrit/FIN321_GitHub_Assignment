@@ -53,7 +53,7 @@
 
 ---
 
-### Beta Alpha Psi (ΔΘ Chapter) — Honolulu, HI  
+### Beta Alpha Psi (Delta Theta Chapter) — Honolulu, HI  
 **Candidate** | Feb 2025 – Present  
 
 - Build professional connections through networking events, workshops, and community service  
